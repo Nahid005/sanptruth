@@ -19,7 +19,7 @@ import { useCreateUserAccount, useSigninAccount } from "@/lib/react-query/querie
 import { useUserContext } from "@/context/AuthContext"
 
 function SignupForm() {
-    const {checkAuthUser, isPending: isUserLoading} = useUserContext();
+    const {checkAuthUser, isLoading: isUserLoading} = useUserContext();
     const navigate = useNavigate();
 
 

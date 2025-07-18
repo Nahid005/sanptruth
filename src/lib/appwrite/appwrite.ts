@@ -12,8 +12,8 @@ export const appWriteConrig = {
     userCollectionId: import.meta.env.VITE_APPWRITE_USER_COLLECTION_ID
 }
 
-client.setEndpoint(appWriteConrig.url);
 client.setProject(appWriteConrig.productId);
+client.setEndpoint(appWriteConrig.url);
 
 export const account = new Account(client);
 export const database = new Databases(client);

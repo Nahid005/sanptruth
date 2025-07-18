@@ -2,14 +2,13 @@ import type { INewUser } from "@/types";
 import { account, appWriteConrig, avatars, database } from "./appwrite";
 import { ID, Query } from "appwrite";
 
-
 export async function createAccount(user: INewUser) {
     try{
         const newAccount = await account.create(
             ID.unique(),
             user.email,
-            user.name,
-            user.password
+            user.password,
+            user.name
         )
 
         if(!newAccount) throw Error;
@@ -17,14 +16,14 @@ export async function createAccount(user: INewUser) {
         const avatarsUrl = avatars.getInitials(user.name);
 
         const newUser = await saveUserToDB({
-            acountId: newAccount.$id,
+            accountId: newAccount.$id,
             name: newAccount.name,
             email: newAccount.email,
-            username: newAccount.username,
+            username: user.username,
             imageUrl: avatarsUrl
         });
 
-        return newAccount;
+        return newUser;
     } catch (error) {
         console.log(error)
         return error;
@@ -32,7 +31,7 @@ export async function createAccount(user: INewUser) {
 }
 
 export async function saveUserToDB(user: {
-    acountId: string;
+    accountId: string;
     email: string;
     name: string;
     imageUrl: string;
@@ -45,6 +44,8 @@ export async function saveUserToDB(user: {
             ID.unique(),
             user,
         )
+
+        return newUser;
     } catch(error) {
         console.log(error);
 
@@ -58,8 +59,6 @@ export async function signInAccount(user: {
 }) {
     try {
         const session = await account.createEmailPasswordSession(user.email, user.password)
-        
-        console.log("session", session)
 
         return session;
     } catch (error) {
@@ -72,8 +71,6 @@ export async function signInAccount(user: {
 export async function getCurrentUser () {
     try {
         const currentAccount = await account.get();
-
-        console.log("current Account",currentAccount)
         
         if(!currentAccount) throw Error;
 
@@ -89,5 +86,7 @@ export async function getCurrentUser () {
 
     } catch (error) {
         console.log(error)
+
+        return null
     }
 }
